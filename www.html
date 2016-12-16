@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<style type="text/css">
+			body{
+				font-size: 12px;
+				color: #333;
+				font-family: "微软雅黑";
+			}
+			span.red{
+				color: red;
+			}
+			span.green{
+				color: green;
+			}
+			span{
+				display: none;
+				width:22px;
+				padding-left: 10px;
+				color: #fff;
+				margin-left: 2px;
+			}
+			span.ruo{
+				background: #c00;				
+			}
+			span.zd{
+				background: #ff0;
+			}
+			span.qiang{
+				background: #0f0;
+			}
+			div.red{
+				color: #f00;
+			}
+			div#yzerror{
+				color: red;
+				display: none;
+			}
+			input#pwd{
+				width:232px;
+			}
+		</style>
+		<title>仿网易密码强度验证</title>			               
+		<script type="text/javascript">
+		  //功能描述:
+		  //1.如果输入密码大于16字符报错：密码长度应为6~16个字符（红色）
+		  //2.小于等于16个字符，验证字符的强度
+		          //--(1)如果输入大于6个字符，纯字母或纯数字提示:弱
+		          //--(2)如果输入大于6个字符，字母和数字提示:中，并改变弱的颜色，删除弱的内容为空白
+		          //--(3)如果输入大于6个字符，字母和数组加特殊字符提示:强，并改变弱和中的颜色，删除若何中的内容为空白
+		          //--(4)删除的情况
+		          //     --如果删除后小于16个字符判断并提示
+		    window.onload=function(){		    	
+		        var $=function(_id){var obj=document.getElementById(_id); return obj;}
+		        var pwd=$("pwd");
+		        var yz=$("yz");
+		        var ruo=$("ruo");
+		        var zd=$("zd");
+		        var qiang=$("qiang");
+		        var yzerror=$("yzerror");
+		        var regStr=/[a-zA-Z]/;//所有字母
+		        var regNum=/[0-9]/;//所有数字
+		        var fStrNum=/\W/;//所有非字母数字
+		        pwd.onkeyup=function(){
+		        	//判断密码少于16个字符的情况
+		            if(pwd.value.length<=16){
+		            	 //首先,显示报错div yz
+		            	  yz.style.display="block";
+		            	// 隐藏大于16个字符报错的div  yzerror  
+		                  yzerror.style.display="none";
+		                  //如果字符大于6个字符并且只包含纯字符 或如果字符大于6个字符并且只包含纯数字
+		            	  if((pwd.value.length>=6 && regStr.test(pwd.value)) ||(pwd.value.length>=6 && regNum.test(pwd.value))){
+		            	      ruo.style.display="inline-block";
+		            	      ruo.style.background="#f00";
+		            	      //如果用户删除密码，判断少于6个字符的时候情况
+		                  }else if(pwd.value.length<6){
+		                  	  //隐藏弱span
+		                  	  ruo.style.display="none";
+		                  	  //隐藏中span
+		                  	  zd.style.display="none";
+		                  	  //隐藏强span
+		                  	  qiang.style.display="none";
+		                  }
+		                  //如果用户输入密码大于6个字符并且包含字母和数字，弱背景色为黄色，清空内容；显示中 span
+		                 if(pwd.value.length>=6 && regNum.test(pwd.value) && regStr.test(pwd.value)){
+		            	      ruo.style.cssText="display:inline-block;background: #fc0;";
+		            	      ruo.innerHTML="&nbsp;";
+		            	      zd.style.cssText="display:inline-block;background: #fc0;";       	
+                           //如果用户删除密码，密码大于等于6个字符包含字母和数字，不包括特殊字符		                 
+		                 }else if(pwd.value.length>=6 && regStr.test(pwd.value)){
+		                  	  zd.style.display="none";
+		                  	  ruo.innerHTML="弱";
+		                  }
+		                 //如果密码大于等于6个字符并且包含字母数字和特殊字符
+		                  if(pwd.value.length>=6 && regNum.test(pwd.value) && regStr.test(pwd.value) && fStrNum.test(pwd.value)){
+		            	  ruo.style.cssText="display:inline-block;background: #090;";
+		            	  ruo.innerHTML="&nbsp;";
+		            	  zd.style.cssText="display:inline-block;background: #090;";
+		            	  zd.innerHTML="&nbsp;";
+		            	  qiang.style.cssText="display:inline-block;background: #090;";
+		            	  //判断用户删除
+		            	  }else if(pwd.value.length>=6 && regNum.test(pwd.value) && regStr.test(pwd.value)){
+		            	      ruo.style.cssText="display:inline-block;background: #fc0;";
+		            	      ruo.innerHTML="&nbsp;";
+		            	      zd.style.cssText="display:inline-block;background: #fc0;"; 
+		            	      zd.innerHTML="中";
+		            	      qiang.style.display="none";
+		            	  //判断用户删除
+		            	  }else if((pwd.value.length>=6 && regNum.test(pwd.value)&& fStrNum.test(pwd.value)) ||(pwd.value.length>=6 && regStr.test(pwd.value)&& fStrNum.test(pwd.value))){
+		            	      ruo.style.cssText="display:inline-block;background: #fc0;";
+		            	      ruo.innerHTML="&nbsp;";
+		            	      zd.style.cssText="display:inline-block;background: #fc0;"; 
+		            	      zd.innerHTML="中";
+		            	      qiang.style.display="none";
+		            	  }
+		            }else{
+		                yz.style.display="none";
+		                yzerror.style.display="block";
+		            }      
+		        }
+		   }
+		</script>
+	</head>
+	<body>
+	  <form name="login">
+	    密码:<input type="password" name="pwd" id="pwd" />
+	       <div id="yz">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6-16个字符区分大小写<span id="ruo">弱</span><span id="zd">中</span><span id="qiang">强</span></div>
+           <div id="yzerror">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;密码长度应为6~16个字符</div>	 
+</form>
+	</body>
+</html>
